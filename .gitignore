@@ -47,6 +47,7 @@ vendor/
 
 # dubbo cp cache
 app/dubbo-cp/cache
+app/dubbo-ui/dist/
 
 # environment files
 .env

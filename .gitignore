@@ -54,3 +54,10 @@ app/dubbo-ui/dist/
 .env.local
 .env.*.local
 AI_CHANGES_SUMMARY.md
+
+# claude config
+.claude/
+openspec/
+
+# local config
+app/dubbo-admin/dubbo-admin.yaml

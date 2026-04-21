@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-package mcp
+package core
+
+import "github.com/apache/dubbo-admin/pkg/mcp/types"
 
 // JSONRPCRequest JSON-RPC 2.0 请求
 type JSONRPCRequest struct {
-	JSONRPC string      `json:"jsonrpc"` // 必须是 "2.0"
-	ID      interface{} `json:"id"`      // 请求 ID
-	Method  string      `json:"method"`  // 方法名
-	Params  interface{} `json:"params"`  // 参数
+	JSONRPC string      `json:"jsonrpc"`
+	ID      interface{} `json:"id"`
+	Method  string      `json:"method"`
+	Params  interface{} `json:"params"`
 }
 
 // JSONRPCResponse JSON-RPC 2.0 响应
@@ -38,34 +40,6 @@ type JSONRPCError struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
-}
-
-// InitializeParams 初始化参数
-type InitializeParams struct {
-	ProtocolVersion string     `json:"protocolVersion"`
-	Capabilities    ClientCaps `json:"capabilities"`
-	ClientInfo      ClientInfo `json:"clientInfo"`
-}
-
-// ClientCaps 客户端能力
-type ClientCaps struct {
-	Roots    *RootsCapability    `json:"roots,omitempty"`
-	Sampling *SamplingCapability `json:"sampling,omitempty"`
-}
-
-// RootsCapability 根目录能力
-type RootsCapability struct {
-	ListChanged bool `json:"listChanged"`
-}
-
-// SamplingCapability 采样能力
-type SamplingCapability struct {
-}
-
-// ClientInfo 客户端信息
-type ClientInfo struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
 }
 
 // InitializeResult 初始化结果
@@ -96,27 +70,15 @@ type ToolListResult struct {
 	Tools []Tool `json:"tools"`
 }
 
-// Tool 工具定义
+// Tool 工具定义（用于响应）
 type Tool struct {
-	Name        string      `json:"name"`
-	Description string      `json:"description"`
-	InputSchema InputSchema `json:"inputSchema"`
-}
-
-// CallToolParams 调用工具参数
-type CallToolParams struct {
-	Name      string                 `json:"name"`
-	Arguments map[string]interface{} `json:"arguments,omitempty"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	InputSchema types.InputSchema `json:"inputSchema"`
 }
 
 // CallToolResult 调用工具结果
 type CallToolResult struct {
-	Content []Content `json:"content"`
-	IsError bool      `json:"isError,omitempty"`
-}
-
-// Content 内容块
-type Content struct {
-	Type string `json:"type"` // "text"
-	Text string `json:"text"`
+	Content []types.Content `json:"content"`
+	IsError bool             `json:"isError,omitempty"`
 }

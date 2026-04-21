@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package mcp
+package types
 
 import (
 	consolectx "github.com/apache/dubbo-admin/pkg/console/context"
@@ -27,7 +27,6 @@ type ToolDef struct {
 	Description string
 	InputSchema InputSchema
 	Handler     ToolHandler
-	Server      *Server // Server 引用，用于获取 console context
 }
 
 // InputSchema 输入参数 schema
@@ -46,11 +45,40 @@ type PropertyDef struct {
 }
 
 // ToolHandler 工具处理器类型
-// 第一个参数是 console context，第二个参数是工具参数
 type ToolHandler func(ctx consolectx.Context, args map[string]any) (*ToolResult, error)
 
 // ToolResult 工具执行结果
 type ToolResult struct {
 	Content []Content `json:"content"`
 	IsError bool      `json:"isError,omitempty"`
+}
+
+// Content 内容块
+type Content struct {
+	Type string `json:"type"`
+	Text string `json:"text"`
+}
+
+// NewToolResult 创建工具结果
+func NewToolResult(content []Content, isError bool) *ToolResult {
+	return &ToolResult{
+		Content: content,
+		IsError: isError,
+	}
+}
+
+// NewTextResult 创建文本结果
+func NewTextResult(text string, isError bool) *ToolResult {
+	return &ToolResult{
+		Content: []Content{{Type: "text", Text: text}},
+		IsError: isError,
+	}
+}
+
+// NewErrorResult 创建错误结果
+func NewErrorResult(err error) *ToolResult {
+	return &ToolResult{
+		Content: []Content{{Type: "text", Text: err.Error()}},
+		IsError: true,
+	}
 }

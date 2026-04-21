@@ -68,6 +68,10 @@ func (c *consoleWebServer) Order() int {
 
 func (c *consoleWebServer) Init(ctx runtime.BuilderContext) error {
 	c.cfg = ctx.Config().Console
+	// 如果 console 配置为 nil（MCP 模式），跳过 HTTP 服务器初始化
+	if c.cfg == nil {
+		return nil
+	}
 	r := gin.New()
 	// Admin UI
 	r.StaticFS("/admin", http.FS(ui.FS()))
@@ -94,6 +98,11 @@ func (c *consoleWebServer) Init(ctx runtime.BuilderContext) error {
 }
 
 func (c *consoleWebServer) Start(coreRt runtime.Runtime, stop <-chan struct{}) error {
+	// 如果 console 配置为 nil（MCP 模式），直接返回
+	if c.cfg == nil {
+		logger.Info("Console disabled in MCP mode")
+		return nil
+	}
 	errChan := make(chan error)
 	c.cs = consolectx.NewConsoleContext(coreRt)
 	router.InitRouter(c.Engine, c.cs)

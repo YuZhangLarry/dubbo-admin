@@ -21,7 +21,7 @@ spec:
     spec:
       storage_path: "../../data/ai/index"
       index_format: sqlite
-      dimension: 1536
+      dimension: 1024
 
   # Available retriever types: local, pinecone, milvus
   retriever:
@@ -29,12 +29,12 @@ spec:
     spec:
       storage_path: "../../data/ai/index"
       index_format: sqlite
-      dimension: 1536
+      dimension: 1024
 
   reranker:
     type: cohere
     spec:
-      enabled: true
+      enabled: false
       model: rerank-english-v3.0
       api_key: "${COHERE_API_KEY}"
 

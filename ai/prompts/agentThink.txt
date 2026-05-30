@@ -29,10 +29,8 @@ In these cases, prefer `memory_all_by_session_id` and classify as `MEMORY_SEARCH
 
 # RAG Rules
 When domain knowledge is insufficient, suggest RAG tools.
-Choose domain by question:
-- Kubernetes topics -> Kubernetes docs tools
-- Dubbo topics -> Dubbo docs tools
-- General topics -> pick the most relevant domain first
+Available RAG tool: `query_knowledge_base` - retrieves relevant documents from indexed knowledge base
+Use this for questions requiring domain-specific documentation or knowledge (Dubbo/K8s documentation, technical guides).
 
 # Output Constraint
 Return JSON only. No markdown, no code fence, no extra text.
@@ -75,5 +73,15 @@ output: {
     "intent": "MEMORY_SEARCH",
     "target_services": [],
     "suggested_tools": ["memory_all_by_session_id"]
+}
+<example>
+
+<example>
+input: {"user_input": "What is Dubbo? What are its core features?"}
+output: {
+    "thought": "This is a question about Dubbo's basic concepts and features, which requires domain knowledge from documentation. I should use the knowledge base retrieval tool to get relevant information about Dubbo from the indexed knowledge base.",
+    "intent": "DOCUMENTATION_QUERY",
+    "target_services": [],
+    "suggested_tools": ["query_knowledge_base"]
 }
 <example>

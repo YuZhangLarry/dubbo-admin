@@ -387,12 +387,13 @@ func (r *RAGComponent) Init(rt *runtime.Runtime) error {
 
 	// Create RAG instance with logger
 	r.Rag = &RAG{
+		Loader:     r.loader.get(),
 		QueryLayer: queryLayer,
-		Splitter:  r.splitter.get(),
-		Indexer:   r.indexer.get(),
-		Retriever: r.retriever.get(),
-		Reranker:  r.reranker.get(),
-		logger:    rt.GetLogger(),
+		Splitter:   r.splitter.get(),
+		Indexer:    r.indexer.get(),
+		Retriever:  r.retriever.get(),
+		Reranker:   r.reranker.get(),
+		logger:     rt.GetLogger(),
 	}
 
 	return nil

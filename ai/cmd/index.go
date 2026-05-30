@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/firebase/genkit/go/ai"
 	"github.com/firebase/genkit/go/core/api"
 	"github.com/firebase/genkit/go/genkit"
 	"github.com/firebase/genkit/go/plugins/compat_oai"
@@ -88,14 +89,16 @@ func executeIndexing(cmd *IndexCommand) error {
 	// Initialize Genkit registry independently
 	plugins := []api.Plugin{}
 	// Initialize plugins from environment variables
+	var dashscopePlugin *compat_oai.OpenAICompatible
 	if key := os.Getenv("DASHSCOPE_API_KEY"); key != "" {
-		plugins = append(plugins, &compat_oai.OpenAICompatible{
+		dashscopePlugin = &compat_oai.OpenAICompatible{
 			Provider: "dashscope",
 			Opts: []option.RequestOption{
 				option.WithAPIKey(key),
 				option.WithBaseURL("https://dashscope.aliyuncs.com/compatible-mode/v1"),
 			},
-		})
+		}
+		plugins = append(plugins, dashscopePlugin)
 	}
 	if key := os.Getenv("GEMINI_API_KEY"); key != "" {
 		plugins = append(plugins, &googlegenai.GoogleAI{APIKey: key})
@@ -114,6 +117,20 @@ func executeIndexing(cmd *IndexCommand) error {
 	}
 
 	g := genkit.Init(ctx, genkit.WithPlugins(plugins...))
+
+	// Define the embedder model for localvec indexer
+	// The lookup name format is: provider + "/" + key (second parameter of DefineEmbedder)
+	// rag.yaml embedder model must match this name
+	if dashscopePlugin != nil {
+		// Define embedder: provider="dashscope", key="text-embedding-v4" (API model name), label="qwen3-embedding" (local name)
+		// After registration, can be looked up as "dashscope/text-embedding-v4"
+		embedder := dashscopePlugin.DefineEmbedder("dashscope", "text-embedding-v4", &ai.EmbedderOptions{
+			Label:      "qwen3-embedding",
+			Supports:   &ai.EmbedderSupports{Input: []string{"text"}},
+			Dimensions: 1024,
+		})
+		genkit.RegisterAction(g, embedder)
+	}
 
 	// Build-time target index selection: default to directory name for this CLI
 	targetIndex := getNamespace("", cmd.Directory)

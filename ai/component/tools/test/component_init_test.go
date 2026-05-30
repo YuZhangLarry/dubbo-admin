@@ -154,5 +154,9 @@ func TestToolsComponent_Init_RAGDependency(t *testing.T) {
 		if genkit.LookupTool(g, "retrieve_basic_concept_from_k8s_doc") == nil {
 			t.Fatalf("expected retrieve_basic_concept_from_k8s_doc to be registered")
 		}
+
+		if genkit.LookupTool(g, "query_knowledge_base") == nil {
+			t.Fatalf("expected query_knowledge_base to be registered")
+		}
 	})
 }

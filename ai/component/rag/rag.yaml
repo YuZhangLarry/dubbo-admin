@@ -3,7 +3,7 @@ spec:
   embedder:
     type: genkit
     spec:
-      model: dashscope/qwen3-embedding
+      model: dashscope/text-embedding-v4
 
   loader:
     type: local
@@ -34,7 +34,7 @@ spec:
   reranker:
     type: cohere
     spec:
-      enabled: true
+      enabled: false
       model: rerank-english-v3.0
       api_key: "${COHERE_API_KEY}"
 

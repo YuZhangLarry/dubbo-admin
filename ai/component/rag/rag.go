@@ -228,7 +228,7 @@ func (r *RAG) RetrieveV2(ctx context.Context, req *RetrieveRequest) (*RetrieveRe
 
 	// Step 3: Reranking
 	if r.Reranker != nil {
-		rawResults, err = r.rerank(ctx, req.Query, rawResults, req.TopK)
+		rerankedResults, err := r.rerank(ctx, req.Query, rawResults, req.TopK)
 		if err != nil {
 			if r.logger != nil {
 				r.logger.WarnContext(ctx, "RAG.RetrieveV2: rerank failed, returning unranked results",
@@ -236,12 +236,9 @@ func (r *RAG) RetrieveV2(ctx context.Context, req *RetrieveRequest) (*RetrieveRe
 					"results_count", len(rawResults),
 				)
 			}
-			// Return results without reranking
-			return &RetrieveResponse{
-				Results:       toRetrieveResults(rawResults),
-				QueryResult:   toQueryProcessResult(queryResult),
-				RetrievalMeta: buildRetrievalMeta(rawResults),
-			}, nil
+			// Return results without reranking (use rawResults, not rerankedResults)
+		} else {
+			rawResults = rerankedResults
 		}
 	}
 

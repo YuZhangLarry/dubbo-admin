@@ -135,7 +135,7 @@ func NewInternalToolManager(rt *runtime.Runtime) (*InternalToolManager, error) {
 	}
 
 	toolDefiners := []ToolDefineFunc{
-		defineMemoryTools,
+		defineContextTools,
 	}
 	var tools []ai.Tool
 	for _, defineTools := range toolDefiners {

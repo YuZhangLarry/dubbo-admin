@@ -90,7 +90,7 @@ func (a *AgentComponent) Init(rt *runtime.Runtime) error {
 		return fmt.Errorf("invalid tools component type")
 	}
 	toolRefs := tools.GetToolRefs()
-	reactAgent, err := NewReactAgent(rt.GetGenkitRegistry(), a.promptBasePath, a.model, a.maxIterations, a.stages, toolRefs)
+	reactAgent, err := NewReActAgent(rt.GetGenkitRegistry(), a.promptBasePath, a.model, a.maxIterations, a.stages, toolRefs)
 	if err != nil {
 		return fmt.Errorf("failed to create ReAct agent: %w", err)
 	}
